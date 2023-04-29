@@ -1,20 +1,23 @@
 // @ts-nocheck
 import { useState } from "react";
 const Board: React.FC = () => {
-    console.log(window.versions);
+    const [fileMsg,setFileMsg] =useState([])
+    console.log(window.electron);
     return (
     <>
-        <h1>{}</h1>
         <button
-        type="button"
-        id="btn"
         onClick={() => {
-            window.electron.ipcRenderer.send('msg1', '这是一条来自于异步的消息')
-        }}
-        >
-        Open a File
+            window.electron.ipcRenderer.invoke('msg1Re', 'path/to/file').then(data => {
+                console.log(data)
+                setFileMsg(data)
+                });
+            window.electron.ipcRenderer.send('readFile', "aa")}}>
+        readC
         </button>
-        File path: <strong id="filePath"></strong>
+
+        { fileMsg.map(item=>{
+              return  <p>{item}</p>
+        })}
     </>
     );
 };

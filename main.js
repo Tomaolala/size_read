@@ -8,6 +8,7 @@ const {
   ipcMain
 } = require("electron");
 const path = require("path")
+const fs= require("fs")
 const createWindow = () => {
   // 创建浏览窗口
   const mainWindow = new BrowserWindow({
@@ -34,7 +35,17 @@ const createWindow = () => {
 // 部分 API 在 ready 事件触发后才能使用。
 app.whenReady().then(() => {
   createWindow();
-
+  ipcMain.handle('msg1Re', (ev, filePath) => {
+    const files =[]
+    console.log(filePath); // 打印传递过来的参数
+    const dirents = fs.readdirSync("C:\\", { withFileTypes: true });
+    for (const dirent of dirents) {
+  
+        files.push(dirent.name,dirent.size);
+    }
+    return Promise.resolve(files);
+  });
+  
   app.on("activate", () => {
     // 在 macOS 系统内, 如果没有已开启的应用窗口
     // 点击托盘图标时通常会重新创建一个新窗口
@@ -52,8 +63,15 @@ app.on("window-all-closed", () => {
 // 也可以拆分成几个文件，然后用 require 导入。
 
 
-ipcMain.on('msg1', (ev, data) => {
-  console.info(data)
-  // 发送消息给渲染进程
-  ev.sender.send('msg1Re', '这是一条来自主进程的反馈消息')
+ipcMain.on('readFile', (ev, filePath) => {
+  const files = [];
+  console.log(typeof filePath)
+  const dirents = fs.readdirSync("C:\\", { withFileTypes: true });
+  for (const dirent of dirents) {
+
+      files.push(dirent.name);
+  }
+  console.log(files)
+  ev.sender.send('msg1Re'," JSON.stringify(files)")
 })
+
