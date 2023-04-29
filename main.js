@@ -4,20 +4,24 @@
 const {
   app,
   BrowserWindow,
-  win
+  win,
+  ipcMain
 } = require("electron");
-const path = require("path");
-
+const path = require("path")
 const createWindow = () => {
   // 创建浏览窗口
   const mainWindow = new BrowserWindow({
     width: 800,
     height: 600,
     webPreferences: {
+      enableRemoteModule: true,
       preload: path.join(__dirname, "preload.js"),
+      nodeIntegration: true,
+      contextIsolation: true,
     },
+    
   });
-
+  mainWindow.webContents.openDevTools()
   // 加载 index.html
   mainWindow.loadURL('http://localhost:5173')
 
@@ -44,6 +48,12 @@ app.whenReady().then(() => {
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin") app.quit();
 });
-
 // 在当前文件中你可以引入所有的主进程代码
 // 也可以拆分成几个文件，然后用 require 导入。
+
+
+ipcMain.on('msg1', (ev, data) => {
+  console.info(data)
+  // 发送消息给渲染进程
+  ev.sender.send('msg1Re', '这是一条来自主进程的反馈消息')
+})
