@@ -1,5 +1,5 @@
 // main.js
-
+if(require('electron-squirrel-startup')) return;  
 // electron 模块可以用来控制应用的生命周期和创建原生浏览窗口
 const {
   app,

@@ -25,3 +25,5 @@ app/*.njsproj
 app/*.sln
 app/*.sw?
 out/
+
+tmp
