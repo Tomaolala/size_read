@@ -22,12 +22,13 @@ const createWindow = () => {
     },
     
   });
-  mainWindow.webContents.openDevTools()
+
   // 加载 index.html
-  mainWindow.loadURL('http://localhost:5173')
+  // mainWindow.loadURL('http://localhost:5173')
+  mainWindow.loadFile("./index.html")
 
   // 打开开发工具
-  // mainWindow.webContents.openDevTools()
+  mainWindow.webContents.openDevTools()
 };
 
 // 这段程序将会在 Electron 结束初始化
@@ -38,7 +39,7 @@ app.whenReady().then(() => {
   ipcMain.handle('msg1Re', (ev, filePath) => {
     const files =[]
     console.log(filePath); // 打印传递过来的参数
-    const dirents = fs.readdirSync("C:\\", { withFileTypes: true });
+    const dirents = fs.readdirSync(filePath, { withFileTypes: true });
     for (const dirent of dirents) {
   
         files.push(dirent.name,dirent.size);
